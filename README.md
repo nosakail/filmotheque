@@ -55,6 +55,22 @@ Cette interface vous permettra de :
 - Voir les schémas de données attendus
 - Comprendre les différentes réponses possibles
 
+### Authentification pour les routes protégées
+
+Certaines routes nécessitent une authentification. Pour utiliser ces routes dans la documentation Swagger :
+
+1. Connectez-vous d'abord via la route `/user/login` pour obtenir un token JWT
+2. Dans la section "Available Authorizations" de Swagger (en haut de la page), entrez votre token au format :
+   ```
+   Bearer <votre_token>
+   ```
+   Exemple :
+   ```
+   Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   ```
+3. Cliquez sur "Authorize" pour sauvegarder le token
+4. Vous pouvez maintenant tester les routes protégées
+
 ## Routes principales
 
 - POST `/user` : Création d'un utilisateur
