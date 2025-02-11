@@ -10,13 +10,19 @@ Ce projet est une API REST développée avec Hapi.js et MySQL.
 
 ## Installation et démarrage
 
-### 1. Installation des dépendances
+### 1. Se placer dans le bon répertoire
+
+```bash
+cd iut-nodejs-tp/iut-project
+```
+
+### 2. Installation des dépendances
 
 ```bash
 npm install
 ```
 
-### 2. Configuration de la base de données
+### 3. Configuration de la base de données
 
 Lancez le conteneur MySQL avec Docker :
 
@@ -29,7 +35,7 @@ sudo docker run -d --name hapi-mysql \
   --default-authentication-plugin=mysql_native_password
 ```
 
-### 3. Démarrage du serveur
+### 4. Démarrage du serveur
 
 ```bash
 npm start
