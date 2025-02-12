@@ -4,17 +4,33 @@ const { Service } = require('@hapipal/schmervice');
 const Boom = require('@hapi/boom');
 const Jwt = require('@hapi/jwt');
 const Encrypt = require('@nosakail/iut-encrypt');
+const MailService = require('./mailService');
 
 module.exports = class UserService extends Service {
 
     async create(user){
-
         const { User } = this.server.models();
+        const { mailService } = this.server.services();
 
-        // Encrypt password before saving
-        user.password = Encrypt.sha1(user.password);
+        try {
+            // Encrypt password before saving
+            user.password = Encrypt.sha1(user.password);
 
-        return User.query().insertAndFetch(user);
+            const newUser = await User.query().insertAndFetch(user);
+
+            // Send welcome email
+            try {
+                await mailService.sendMail(user.email);
+            } catch (emailError) {
+                console.error('Failed to send welcome email:', emailError);
+                // Continue even if email fails
+            }
+
+            return newUser;
+        } catch (error) {
+            console.error('Error creating user:', error);
+            throw Boom.badImplementation('Failed to create user');
+        }
     }
 
     findAll(){
