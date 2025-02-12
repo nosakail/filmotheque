@@ -3,13 +3,16 @@
 const { Service } = require('@hapipal/schmervice');
 const Boom = require('@hapi/boom');
 const Jwt = require('@hapi/jwt');
-
+const Encrypt = require('@nosakail/iut-encrypt');
 
 module.exports = class UserService extends Service {
 
-    create(user){
+    async create(user){
 
         const { User } = this.server.models();
+
+        // Encrypt password before saving
+        user.password = Encrypt.sha1(user.password);
 
         return User.query().insertAndFetch(user);
     }
@@ -39,9 +42,9 @@ module.exports = class UserService extends Service {
 
         const { User } = this.server.models();
 
-        const user = await User.query().findOne({ email, password });
+        const user = await User.query().findOne({ email });
 
-        if (!user) {
+        if (!user || !Encrypt.compareSha1(password, user.password)) {
             throw Boom.unauthorized('Invalid credentials');
         }
 
