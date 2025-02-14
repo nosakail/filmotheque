@@ -10,7 +10,7 @@ module.exports = class UserService extends Service {
 
     async create(user){
         const { User } = this.server.models();
-        const { mailService } = this.server.services();
+        const { MailService } = this.server.services();
 
         try {
             // Encrypt password before saving
@@ -20,7 +20,7 @@ module.exports = class UserService extends Service {
 
             // Send welcome email
             try {
-                await mailService.sendMail(user.email);
+                await MailService.sendMail(user.email);
             } catch (emailError) {
                 console.error('Failed to send welcome email:', emailError);
                 // Continue even if email fails
@@ -47,11 +47,21 @@ module.exports = class UserService extends Service {
         return User.query().deleteById(id);
     }
 
-    update(id, user){
-
+    async update(id, user){
         const { User } = this.server.models();
 
-        return User.query().findById(id).patch(user);
+        // Check if user exists
+        const existingUser = await User.query().findById(id);
+        if (!existingUser) {
+            throw Boom.notFound('User not found');
+        }
+
+        try {
+            return await User.query().patchAndFetchById(id, user);
+        } catch (error) {
+            console.error('Error updating user:', error);
+            throw Boom.badImplementation('Failed to update user');
+        }
     }
 
     async login(email, password) {
@@ -68,6 +78,7 @@ module.exports = class UserService extends Service {
             {
                 aud: 'urn:audience:iut',
                 iss: 'urn:issuer:iut',
+                id: user.id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,

@@ -12,7 +12,9 @@
   "scripts": {
     "start": "node server",
     "test": "lab -a @hapi/code -I \"__core-js_shared__,CSS,regeneratorRuntime,core\" -L",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback"
   },
   "dependencies": {
     "@hapi/boom": "^9.1.4",

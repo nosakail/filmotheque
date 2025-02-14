@@ -10,19 +10,43 @@ module.exports = [
             auth: false,
             tags:['api'],
             validate: {
-            payload: Joi.object({
-                firstName: Joi.string().required().min(3).example('John').description('Firstname of the user'),
-                lastName: Joi.string().required().min(3).example('Doe').description('Lastname of the user'),
-                email: Joi.string().required().email().example('john@doe.fr').description('Email of the user'),
-                password: Joi.string().required().example('password').description('Password of the user'),
-                username: Joi.string().required().example('johndoe').description('Username of the user')
-            })
+                payload: Joi.object({
+                    firstName: Joi.string().required().min(3).example('John').description('Firstname of the user'),
+                    lastName: Joi.string().required().min(3).example('Doe').description('Lastname of the user'),
+                    email: Joi.string().required().email().example('john@doe.fr').description('Email of the user'),
+                    password: Joi.string().required().example('password').description('Password of the user'),
+                    username: Joi.string().required().example('johndoe').description('Username of the user')
+                })
+            }
+        },
+        handler: async (request, h) => {
+            const { userService } = request.services();
+            const user = request.payload;
+            user.roles = ['user']; // Default role for public registration
+            return await userService.create(user);
         }
     },
+    {
+        method: 'post',
+        path: '/user/admin',
+        options: {
+            tags: ['api'],
+            auth: {
+                scope: ['admin']
+            },
+            validate: {
+                payload: Joi.object({
+                    firstName: Joi.string().required().min(3).example('John').description('Firstname of the user'),
+                    lastName: Joi.string().required().min(3).example('Doe').description('Lastname of the user'),
+                    email: Joi.string().required().email().example('john@doe.fr').description('Email of the user'),
+                    password: Joi.string().required().example('password').description('Password of the user'),
+                    username: Joi.string().required().example('johndoe').description('Username of the user'),
+                    roles: Joi.array().items(Joi.string().valid('admin', 'user')).single().required().description('User roles')
+                })
+            }
+        },
         handler: async (request, h) => {
-
             const { userService } = request.services();
-
             return await userService.create(request.payload);
         }
     },
@@ -67,21 +91,21 @@ module.exports = [
         method: 'patch',
         path: '/user/{id}',
         options: {
-            tags:['api'],
-            auth : {
-                scope : ['admin']
+            tags: ['api'],
+            auth: {
+                scope: ['admin']
             },
             validate: {
                 params: Joi.object({
                     id: Joi.number().integer().required().min(1)
                 }),
                 payload: Joi.object({
-                    firstName: Joi.string().min(3).example('John').description('Firstname of the user'),
-                    lastName: Joi.string().min(3).example('Doe').description('Lastname of the user'),
-                    email: Joi.string().email().example('john@doe.fr').description('Email of the user'),
-                    password: Joi.string().example('password').description('Password of the user'),
-                    username: Joi.string().example('johndoe').description('Username of the user')
-                })
+                    firstName: Joi.string().min(3),
+                    lastName: Joi.string().min(3),
+                    email: Joi.string().email(),
+                    username: Joi.string(),
+                    roles: Joi.array().items(Joi.string().valid('admin', 'user')).single()
+                }).min(1)
             }
         },
         handler: async (request, h) => {

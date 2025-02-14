@@ -6,7 +6,7 @@ require('dotenv').config();
 
 
 
-module.exports = class mailService extends Service {
+module.exports = class MailService extends Service {
     constructor() {
         super();
 
