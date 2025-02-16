@@ -10,7 +10,7 @@ module.exports = class UserService extends Service {
 
     async create(user){
         const { User } = this.server.models();
-        const { MailService } = this.server.services();
+        const mailService = await this.server.services().mailService;
 
         try {
             // Encrypt password before saving
@@ -20,7 +20,8 @@ module.exports = class UserService extends Service {
 
             // Send welcome email
             try {
-                await MailService.sendMail(user.email);
+                const welcomeMessage = mailService.createWelcomeMessage(user.email);
+                await mailService.sendMail(welcomeMessage);
             } catch (emailError) {
                 console.error('Failed to send welcome email:', emailError);
                 // Continue even if email fails

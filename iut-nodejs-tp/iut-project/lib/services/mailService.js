@@ -4,8 +4,6 @@ const { Service } = require('@hapipal/schmervice');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-
-
 module.exports = class MailService extends Service {
     constructor() {
         super();
@@ -32,16 +30,36 @@ module.exports = class MailService extends Service {
         };
     }
 
-    async sendMail(recipient) {
-        const message = this.createWelcomeMessage(recipient);
+    createAdditionMovieMessage(recipient, movieName) {
+        return {
+            from: process.env.SMTP_USER,
+            to: recipient,
+            subject: 'New movie is available',
+            text: `Hello we inform you that ${movieName} is Available`,
+            html: `<p><b>Hello</b> we inform you that ${movieName} is Available</p>`
+        };
+    }
+
+    createUpdateMovieMessage(recipient, movieName) {
+        return {
+            from: process.env.SMTP_USER,
+            to: recipient,
+            subject: 'One of your favorites was updated',
+            text: `Hello we inform you that ${movieName} was updated`,
+            html: `<p><b>Hello</b> we inform you that ${movieName} was updated</p>`
+        };
+    }
+
+    async sendMail(message) {
         try {
+            console.log('Attempting to send email to:', message.to);
             const info = await this.transporter.sendMail(message);
             console.log('Message sent: %s', info.messageId);
             return info;
         } catch (err) {
-            console.error('Error occurred sending mail: ' + err.message);
-            throw err;
+            console.error('Error occurred sending mail:', err);
+            // Ne pas propager l'erreur pour ne pas bloquer les autres opérations
+            return null;
         }
     }
-
-}
+};
