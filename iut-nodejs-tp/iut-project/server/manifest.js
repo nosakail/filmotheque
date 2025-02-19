@@ -5,10 +5,10 @@ const Confidence = require('@hapipal/confidence');
 const Toys = require('@hapipal/toys');
 const Schwifty = require('@hapipal/schwifty');
 
-// Pull .env into process.env
+// Charger .env dans process.env
 Dotenv.config({ path: `${__dirname}/.env` });
 
-// Glue manifest as a confidence store
+// Manifeste Glue comme magasin de confiance
 module.exports = new Confidence.Store({
     server: {
         host: 'localhost',
@@ -25,13 +25,17 @@ module.exports = new Confidence.Store({
             },
             production: {
                 request: ['implementation']
+            },
+            development: {
+                log: ['error', 'implementation', 'internal'],
+                request: ['error', 'implementation', 'internal']
             }
         }
     },
     register: {
         plugins: [
             {
-                plugin: '../lib', // Main plugin
+                plugin: '../lib', // Plugin principal
                 options: {}
             },
             {
@@ -57,6 +61,9 @@ module.exports = new Confidence.Store({
                     },
                     production : {
                         migrateOnStart : false
+                    },
+                    development: {
+                        migrateOnStart: true
                     }
                 }
             },

@@ -9,11 +9,11 @@ module.exports = {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
 
-            // Foreign keys
+            // Clés étrangères
             table.foreign('userId').references('user.id').onDelete('CASCADE');
             table.foreign('movieId').references('movie.id').onDelete('CASCADE');
 
-            // Unique constraint to prevent duplicate favorites
+            // Contrainte unique pour éviter les doublons de favoris
             table.unique(['userId', 'movieId']);
         });
     },

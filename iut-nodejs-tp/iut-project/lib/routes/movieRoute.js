@@ -4,7 +4,7 @@ const Joi = require('joi')
 
 module.exports = [
     {
-        //create
+        //création
         method: 'post',
         path: '/movie',
         options: {
@@ -15,9 +15,9 @@ module.exports = [
             },
             validate: {
                 payload: Joi.object({
-                    title: Joi.string().required().min(2).example('La Planète des Singes').description('Title of the movie'),
-                    description: Joi.string().required().min(15).example('A sci-fi film about intelligent apes.').description('Description of the movie'),
-                    filmmaker: Joi.string().required().min(3).example('Wes Ball').description('Name of the filmmaker'),
+                    title: Joi.string().required().min(2).example('La Planète des Singes').description('Titre du film'),
+                    description: Joi.string().required().min(15).example('Un film de science-fiction sur des singes intelligents.').description('Description du film'),
+                    filmmaker: Joi.string().required().min(3).example('Wes Ball').description('Nom du réalisateur'),
                     realisedAt: Joi.date().required()
                 })
             }
@@ -30,7 +30,7 @@ module.exports = [
         }        
     },
 
-    //get
+    //récupération
     {
         method: 'get',
         path: '/movies',
@@ -48,7 +48,7 @@ module.exports = [
         }
     },
 
-    //modify
+    //modification
     {
         method: 'patch',
         path: '/movie/{id}',
@@ -62,9 +62,9 @@ module.exports = [
                     id: Joi.number().integer().required().min(1)
                 }),
                 payload: Joi.object({
-                    title: Joi.string().min(2).example('La Planète des Singes').description('Title of the movie'),
-                    description: Joi.string().min(15).example('A sci-fi film about intelligent apes.').description('Description of the movie'),
-                    filmmaker: Joi.string().min(3).example('Wes Ball').description('Name of the filmmaker'),
+                    title: Joi.string().min(2).example('La Planète des Singes').description('Titre du film'),
+                    description: Joi.string().min(15).example('Un film de science-fiction sur des singes intelligents.').description('Description du film'),
+                    filmmaker: Joi.string().min(3).example('Wes Ball').description('Nom du réalisateur'),
                     realisedAt: Joi.date()
                 }).min(1) 
             }
@@ -77,7 +77,7 @@ module.exports = [
         }
     },
 
-    // delete
+    // suppression
     {
         method: 'delete',
         path: '/movie/{id}',
@@ -99,6 +99,8 @@ module.exports = [
             return await movieService.delete(request.params.id);
         }
     },
+
+    //export des films
     {
         method: 'POST',
         path: '/movies/export-movies',

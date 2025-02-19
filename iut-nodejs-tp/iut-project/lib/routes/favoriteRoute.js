@@ -4,14 +4,14 @@ const Joi = require('joi')
 
 module.exports = [
 
-    //add favorite
+    //ajout aux favoris
     {
         method: 'post',
         path: '/favorites',
         options: {
             tags:['api'],
             auth: {
-                scope: ['user']
+                scope: ['user', 'admin']
             },
             validate: {
                 payload: Joi.object({
@@ -28,14 +28,14 @@ module.exports = [
     },
 
 
-    //get favorites
+    //récupération des favoris
     {
         method: 'get',
         path: '/favorites',
         options: {
             tags:['api'],
             auth: {
-                scope: ['user']
+                scope: ['user', 'admin']
             }
         },
         handler: async (request, h) => {
@@ -47,14 +47,14 @@ module.exports = [
     },
 
 
-    //delete favorite
+    //suppression des favoris
     {
             method: 'delete',
             path: '/favorites/{id}',
             options: {
                 tags:['api'],
                 auth: {
-                    scope: ['user']
+                    scope: ['user', 'admin']
                 },
                 validate: {
                     params: Joi.object({

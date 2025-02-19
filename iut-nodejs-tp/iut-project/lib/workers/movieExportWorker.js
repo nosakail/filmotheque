@@ -27,16 +27,24 @@ const knexConfig = {
 
 const knex = require('knex')(knexConfig);
 
+// Configuration du transporteur SMTP pour l'envoi d'emails
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
-    secure: false,
+    secure: false, // true pour le port 465, false pour les autres ports
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD
     }
 });
 
+/**
+ * Traite une demande d'export de films
+ * @param {string} data - Les données JSON de la demande d'export
+ * @param {string} data.userEmail - L'adresse email de l'utilisateur qui recevra l'export
+ * @returns {Promise<void>} - Ne retourne rien, mais envoie un email avec le fichier CSV
+ * @throws {Error} - Si une erreur survient pendant le processus d'export
+ */
 async function processExportRequest(data) {
     try {
         const { userEmail } = JSON.parse(data);
@@ -48,7 +56,7 @@ async function processExportRequest(data) {
 
         // Récupérer tous les films depuis la table 'movie'
         console.log('Worker: Récupération des films depuis la table movie');
-        const movies = await knex.select('*').from('movie');
+        const movies = await knex.select().from('movie');
         console.log('Worker: Nombre de films trouvés:', movies.length);
 
         // Convertir en CSV
@@ -82,6 +90,12 @@ async function processExportRequest(data) {
     }
 }
 
+/**
+ * Démarre le worker d'export de films
+ * Initialise la connexion RabbitMQ et commence à écouter les messages
+ * @returns {Promise<void>} - Ne retourne rien, mais maintient le worker en vie
+ * @throws {Error} - Si une erreur survient au démarrage du worker
+ */
 async function startWorker() {
     try {
         console.log('Worker: Démarrage...');
@@ -96,8 +110,14 @@ async function startWorker() {
 
         channel.consume(queue, async (msg) => {
             if (msg !== null) {
-                await processExportRequest(msg.content.toString());
-                channel.ack(msg);
+                try {
+                    await processExportRequest(msg.content.toString());
+                    channel.ack(msg);
+                } catch (error) {
+                    console.error('Erreur lors du traitement de la demande d\'export:', error);
+                    // On ne rejette pas le message pour éviter une boucle infinie
+                    channel.ack(msg);
+                }
             }
         });
 

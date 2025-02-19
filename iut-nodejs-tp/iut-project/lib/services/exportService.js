@@ -8,6 +8,11 @@ module.exports = class ExportService extends Service {
         super();
     }
 
+    /**
+     * Envoie une demande d'export de films via RabbitMQ
+     * @param {string} data - Les données à envoyer pour l'export
+     * @returns {Promise<void>} - Ne retourne rien, mais envoie un message à RabbitMQ
+     */
     async sendExportRequest(data) {
         try {
             const connection = await amqp.connect('amqp://localhost');
