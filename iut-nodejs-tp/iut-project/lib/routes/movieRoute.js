@@ -99,4 +99,25 @@ module.exports = [
             return await movieService.delete(request.params.id);
         }
     },
-]
+    {
+        method: 'POST',
+        path: '/movies/export-movies',
+        options: {
+            auth: {
+                scope: ['admin']
+            },
+            handler: async (request, h) => {
+                const { movieService } = request.services();
+                const { exportService } = request.services();
+                const userEmail = request.auth.credentials.email;
+
+                await exportService.sendExportRequest({ userEmail });
+
+                return h.response({ message: 'Export en cours. Vous recevrez le fichier CSV par email.' }).code(202);
+            },
+            tags: ['api'],
+            description: 'Exporter tous les films en CSV (admin uniquement)',
+            notes: 'Retourne un fichier CSV contenant tous les films'
+        }
+    }
+];

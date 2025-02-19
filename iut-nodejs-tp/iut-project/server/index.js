@@ -3,6 +3,8 @@
 const Glue = require('@hapi/glue');
 const Exiting = require('exiting');
 const Manifest = require('./manifest');
+const { fork } = require('child_process');
+const Path = require('path');
 
 exports.deployment = async ({ start } = {}) => {
 
@@ -12,6 +14,17 @@ exports.deployment = async ({ start } = {}) => {
     if (start) {
         await Exiting.createManager(server).start();
         server.log(['start'], `Server started at ${server.info.uri}`);
+
+        // Démarrer le worker dans un processus séparé
+        const workerPath = Path.join(__dirname, '..', 'lib', 'workers', 'movieExportWorker.js');
+        const worker = fork(workerPath);
+
+        // Gérer l'arrêt propre du worker
+        process.on('SIGINT', () => {
+            worker.kill();
+            process.exit(0);
+        });
+
         return server;
     }
 
@@ -25,7 +38,6 @@ if (require.main === module) {
     exports.deployment({ start: true });
 
     process.on('unhandledRejection', (err) => {
-
         throw err;
     });
 }
