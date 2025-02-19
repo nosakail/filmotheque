@@ -117,8 +117,24 @@ Certaines routes nécessitent une authentification. Pour utiliser ces routes dan
 
 ## Routes principales
 
+### Utilisateurs
 - POST `/user` : Création d'un utilisateur
 - GET `/users` : Liste des utilisateurs 
 - PATCH `/user/{id}` : Modification d'un utilisateur 
 - DELETE `/user/{id}` : Suppression d'un utilisateur 
 - POST `/user/login` : Connexion d'un utilisateur
+
+### Films
+- GET `/movies` : Liste tous les films
+- GET `/movies/{id}` : Récupère un film spécifique
+- POST `/movies` : Ajoute un nouveau film (admin)
+- PUT `/movies/{id}` : Met à jour un film (admin)
+- DELETE `/movies/{id}` : Supprime un film (admin)
+- POST `/movies/export-movies` : Exporte les films en CSV (admin)
+
+### Favoris
+- GET `/favorites` : Liste les favoris de l'utilisateur connecté
+- POST `/favorites` : Ajoute un film aux favoris
+- DELETE `/favorites/{id}` : Supprime un favori
+
+
