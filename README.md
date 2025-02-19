@@ -24,7 +24,29 @@ npm install
 
 ### 3. Configuration de la base de données
 
-Lancez le conteneur MySQL avec Docker :
+Créez un fichier `.env` dans le dossier `server/` avec le contenu suivant :
+
+```env
+# Configuration de la base de données
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=hapi
+DB_NAME=user
+DB_PORT=3306
+
+# Configuration SMTP pour l'envoi d'emails
+SMTP_HOST=smtp.ethereal.email
+SMTP_PORT=587
+SMTP_USER=    # Générer sur https://ethereal.email
+SMTP_PASSWORD= # Générer sur https://ethereal.email
+```
+
+Pour obtenir les identifiants SMTP :
+1. Visitez https://ethereal.email
+2. Cliquez sur "Create Ethereal Account"
+3. Copiez les identifiants générés dans votre fichier .env
+
+Ensuite, lancez le conteneur MySQL avec Docker :
 
 ```bash
 sudo docker run -d --name hapi-mysql \
@@ -35,7 +57,29 @@ sudo docker run -d --name hapi-mysql \
   --default-authentication-plugin=mysql_native_password
 ```
 
-### 4. Démarrage du serveur
+### 4. Configuration de RabbitMQ
+
+L'application utilise RabbitMQ pour la gestion des tâches asynchrones (export CSV des films).
+
+Pour accéder à l'interface de gestion RabbitMQ :
+1. Activez le plugin de gestion :
+```bash
+sudo rabbitmq-plugins enable rabbitmq_management
+```
+
+2. Créez un utilisateur admin :
+```bash
+sudo rabbitmqctl add_user admin admin
+sudo rabbitmqctl set_user_tags admin administrator
+sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
+```
+
+3. Accédez à l'interface de gestion :
+- URL : http://localhost:15672
+- Username : admin
+- Password : admin
+
+### 5. Démarrage du serveur
 
 ```bash
 npm start
