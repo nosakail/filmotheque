@@ -53,6 +53,7 @@
     "exiting": "6.x.x",
     "hapi-swagger": "14.x.x",
     "knex": "0.21.x",
+    "sinon": "^19.0.2",
     "sqlite3": "5.x.x"
   }
 }
