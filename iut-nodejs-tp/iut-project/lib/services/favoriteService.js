@@ -59,7 +59,7 @@ module.exports = class FavoriteService extends Service {
      * @returns {Promise<number>} - Le nombre de favoris supprimés (0 ou 1)
      */
     async delete(id, userId) {
-        const { Favorite, Movie } = this.server.models();
+        const { Favorite, Movie, User } = this.server.models();
         const { mailService } = this.server.services();
 
         // Vérifier si le favori existe et appartient à l'utilisateur

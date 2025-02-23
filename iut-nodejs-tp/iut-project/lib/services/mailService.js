@@ -60,6 +60,22 @@ module.exports = class MailService extends Service {
     }
 
     /**
+     * Crée un message pour notifier la suppression d'un film des favoris
+     * @param {Object} movie - Le film supprimé des favoris
+     * @param {Object} user - L'utilisateur concerné
+     * @returns {Object} - L'objet message formaté pour l'envoi d'email
+     */
+    createMovieRemovedFromFavoritesMessage(movie, user) {
+        return {
+            from: process.env.SMTP_USER,
+            to: user.email,
+            subject: 'Movie Removed from Favorites',
+            text: `Hello, we inform you that "${movie.title}" has been removed from your favorites.`,
+            html: `<p><b>Hello</b>, we inform you that "${movie.title}" has been removed from your favorites.</p>`
+        };
+    }
+
+    /**
      * Crée un transporteur SMTP pour l'envoi d'emails
      * @private
      * @returns {Object} - Le transporteur SMTP configuré
