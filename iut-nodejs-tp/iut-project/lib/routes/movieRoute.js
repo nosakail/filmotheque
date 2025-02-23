@@ -8,7 +8,6 @@ module.exports = [
         method: 'post',
         path: '/movie',
         options: {
-            auth: false,
             tags:['api'],
             auth: {
                 scope: ['admin']

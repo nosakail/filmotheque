@@ -84,6 +84,7 @@ sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 ```bash
 npm start
 ```
+> Note : Les mots de passe dans l'application sont chiffrés à l'aide du module [iut-encrypt](https://github.com/nosakail/iut-encrypt).
 
 ## Documentation de l'API
 
