@@ -86,6 +86,20 @@ npm start
 ```
 > Note : Les mots de passe dans l'application sont chiffrés à l'aide du module [iut-encrypt](https://github.com/nosakail/iut-encrypt).
 
+## Exécution des tests
+
+Pour exécuter les tests, assurez-vous d'abord de vous placer dans le bon répertoire :
+
+```bash
+cd iut-nodejs-tp/iut-project
+```
+
+Ensuite, lancez les tests avec la commande suivante :
+
+```bash
+npx lab -v
+```
+
 ## Documentation de l'API
 
 Une fois le serveur démarré, vous pouvez accéder à la documentation Swagger de l'API à l'adresse suivante :
